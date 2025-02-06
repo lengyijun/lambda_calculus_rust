@@ -8,3 +8,4 @@ pub mod result;
 #[macro_use]
 pub mod tuple;
 pub mod num;
+pub mod turing_machine;
