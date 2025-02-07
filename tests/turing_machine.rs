@@ -1,20 +1,63 @@
 #![cfg(feature = "encoding")]
 
-extern crate lambda_calculus as lambda;
+extern crate lambda_calculus;
 
-use lambda::data::list_blank::*;
-use lambda::*;
+use crate::data::boolean::{fls, tru};
+use lambda_calculus::data::num::church::eq;
+use lambda_calculus::data::pair::pair;
+use lambda_calculus::data::turing_machine::tape::*;
+use lambda_calculus::*;
 
+/// state → tape_head → Option (write × move × state)
+/// state → tape_head → <boolean, X>
+///                         true, (write × move × state)
+///                        false, state
+///
 /// https://bbchallenge.org/1RB1LB_1LA1RZ
-/// λ f state tape_head left right. (eq tape_head 0)
-///                                     ((eq state 0)
-///                                         (f 1 (head l) (tail l) (cons 1 r))
-///                                         (f 1 (head r) (cons 1 l) (tail r))
-///                                     )
-///                                     ((eq state 0)
-///                                         (f 0 (head r) (cons 1 l) (tail r))
-///                                         1
-///                                     )
-fn bb2() -> Term() {
-    app(Y, abs(term))
+fn bb2() -> Term {
+    abs!(
+        2,
+        app!(
+            eq(),
+            Var(2),
+            0.into_church(),
+            // state = A
+            app!(
+                eq(),
+                Var(1),
+                0.into_church(),
+                app!(
+                    pair(),
+                    tru(),
+                    tuple!(1.into_church(), move_right(), 1.into_church())
+                ),
+                app!(
+                    pair(),
+                    tru(),
+                    tuple!(1.into_church(), move_left(), 1.into_church())
+                )
+            ),
+            // state = B
+            app!(
+                eq(),
+                Var(1),
+                0.into_church(),
+                app!(
+                    pair(),
+                    tru(),
+                    tuple!(1.into_church(), move_left(), 0.into_church())
+                ),
+                app!(pair(), fls(), 1.into_church())
+            )
+        )
+    )
+}
+
+#[test]
+fn foo() {
+    assert_eq!(beta(run(bb2), HSP, 0), 1.into_church()); // wrong answer
+
+    // assert_eq!(beta(run(bb2), CBN, 0), 1.into_church()); // wrong answer
+    // assert_eq!(beta(run(bb2), HNO, 0), 1.into_church()); // stack overflow
+    // assert_eq!(beta(run(bb2), NOR, 0), 1.into_church()); // stack overflow
 }
