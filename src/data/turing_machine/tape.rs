@@ -20,11 +20,11 @@ pub fn new_tape() -> Term {
     tuple!(0.into_church(), nil(), nil())
 }
 
-/// λ tape b. (b, tape.2, tape.3)
+/// λ b tape. (b, tape.2, tape.3)
 pub fn write() -> Term {
     abs!(
         2,
-        tuple!(Var(1), app(pi!(2, 3), Var(2)), app(pi!(3, 3), Var(2)))
+        tuple!(Var(2), app(pi!(2, 3), Var(1)), app(pi!(3, 3), Var(1)))
     )
 }
 
@@ -79,7 +79,7 @@ fn step() -> Term {
                 app(pi!(3, 3), Var(1)),
                 app(
                     app(pi!(2, 3), Var(1)), // move
-                    app!(write(), app(snd(), Var(1)), app(pi!(2, 3), Var(1)))
+                    app!(write(), app(pi!(2, 3), Var(1)), app(snd(), Var(1)))
                 )
             )),
             I(),
