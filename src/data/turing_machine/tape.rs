@@ -52,7 +52,11 @@ pub fn move_left() -> Term {
 /// machine -> (state × tape) -> <boolean, X>
 ///                                  true, (state × tape)
 ///                                 false, state
-fn step() -> Term {
+/// @parameter machine:
+/// state → tape_head → <boolean, X>
+///                         true, (write × move × state)
+///                        false, state
+pub fn step() -> Term {
     // o : <boolean, X>
     //         true, (write × move × state)
     //        false, state
@@ -63,22 +67,30 @@ fn step() -> Term {
     );
     let b = app(fst(), o.clone());
 
-    app!(
-        pair(),
-        b.clone(),
+    abs!(
+        2,
         app!(
-            b,
-            // Var(1) : (write × move × state)
-            abs(app!(
-                pair(),
-                app(pi!(3, 3), Var(1)),
-                app(
-                    app(pi!(2, 3), Var(1)), // move
-                    app!(write(), app(pi!(2, 3), Var(1)), app(snd(), Var(2)))
-                )
-            )),
-            I(),
-            app(snd(), o.clone())
+            pair(),
+            b.clone(),
+            app!(
+                b,
+                // (write × move × state) -> (state × tape)
+                abs(
+                    // Var(1) : (write × move × state)
+                    // Var(2) : (state × tape)
+                    // Var(3) : machine
+                    app!(
+                        pair(),
+                        app(pi!(3, 3), Var(1)),
+                        app(
+                            app(pi!(2, 3), Var(1)), // move
+                            app!(write(), app(pi!(1, 3), Var(1)), app(snd(), Var(2)))
+                        )
+                    )
+                ),
+                I(),
+                app(snd(), o.clone())
+            )
         )
     )
 }
@@ -95,18 +107,24 @@ fn step() -> Term {
 ///                         true, (write × move × state)
 ///                        false, state
 pub fn run(machine: impl Fn() -> Term) -> Term {
+    //  <boolean, X>
+    //      true, (state × tape)
+    //     false, state
     let x = app!(step(), Var(2), Var(1));
 
     // machine -> (state × tape) -> state
     app!(
         Y(),
-        app!(
-            app(fst(), x.clone()),
-            app!(Var(4), Var(3), Var(2)),
-            I(),
-            app(snd(), x)
+        abs!(
+            3,
+            app!(
+                app(fst(), x.clone()),
+                app!(Var(4), Var(3), Var(1)),
+                I(),
+                app(snd(), x)
+            )
         ),
         machine(),
-        new_tape()
+        app!(pair(), 0.into_church(), new_tape())
     )
 }
