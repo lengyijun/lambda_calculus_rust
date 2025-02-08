@@ -70,17 +70,28 @@ fn luyao() {
  */
 
 #[test]
-fn test_mmove() {
+fn test_new_tape() {
     assert_eq!(beta(app!(pi!(1, 3), new_tape()), HSP, 0), 0.into_church());
     assert_eq!(beta(app!(pi!(2, 3), new_tape()), HSP, 0), nil());
     assert_eq!(beta(app!(pi!(3, 3), new_tape()), HSP, 0), nil());
-    // let x = app!(move_left(), new_tape());
-    let x = app!(write(), 0.into_church(), new_tape());
-    assert_eq!(beta(app!(pi!(2, 3), x.clone()), HSP, 0), tru(),);
+}
 
-    // assert_eq!(beta(app!(pi!(3, 3), x.clone()), HSP, 0), fls());
-    // assert_eq!(beta(app!(pi!(1, 3), x.clone()), HSP, 0), 0.into_church());
-    // assert_eq!(beta(app!(move_right(), new_tape()), HSP, 0), new_tape());
+#[test]
+fn test_write() {
+    let x = app!(write(), 0.into_church(), new_tape());
+    assert_eq!(beta(app!(pi!(2, 3), x.clone()), HSP, 0), nil(),);
+    assert_eq!(beta(app!(pi!(3, 3), x.clone()), HSP, 0), nil());
+    assert_eq!(beta(app!(pi!(1, 3), x.clone()), HSP, 0), 0.into_church());
+}
+
+#[test]
+fn test_mmove() {
+    let x = app!(move_left(), new_tape());
+    /*
+    assert_eq!(beta(app!(pi!(1, 3), x.clone()), HSP, 0), 0.into_church());
+    assert_eq!(beta(app!(pi!(2, 3), x.clone()), HSP, 0), tru(),);
+    assert_eq!(beta(app!(pi!(3, 3), x.clone()), HSP, 0), tru());
+     */
 }
 
 /*

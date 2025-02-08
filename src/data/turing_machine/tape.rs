@@ -24,7 +24,7 @@ pub fn new_tape() -> Term {
 pub fn write() -> Term {
     abs!(
         2,
-        tuple!(Var(2), app(pi!(2, 3), Var(1)), app(pi!(3, 3), Var(1)))
+        tuple!(Var(3), app(pi!(2, 3), Var(2)), app(pi!(3, 3), Var(2)))
     )
 }
 
