@@ -48,6 +48,19 @@ fn jiting() {
     // assert_eq!(beta(x, HSP, 0), beta(y, HSP, 0),);
 }
 
+#[test]
+fn tinge() {
+    let x = app!(pair(), Var(6), Var(7));
+    let a = app!(fst(), x.clone());
+    let b = app!(snd(), x.clone());
+
+    assert_eq!(
+        beta(x, NOR, 0),
+        beta(app!(abs!(2, app!(pair(), Var(2), Var(1))), a, b), NOR, 0),
+    );
+    // assert_eq!(beta(x, HSP, 0), beta(y, HSP, 0),);
+}
+
 /*
 #[test]
 fn luyao() {

@@ -1,12 +1,7 @@
 //! <https://leanprover-community.github.io/mathlib4_docs/Mathlib/Computability/Tape.html#Turing.Tape>
 //! <https://github.com/lengyijun/goldbach_tm/blob/main/GoldbachTm/Tm25/TuringMachine25.lean>
 //! tape = <tape_head, left, right>
-//! cfg  = <state, tape>
-//! stmt = <write, move>
 //!
-//! move:
-//! left = move_left
-//! right = move_right
 
 use crate::combinators::{I, Y};
 use crate::data::num::convert::IntoChurchNum;
@@ -54,17 +49,16 @@ pub fn move_left() -> Term {
     ))
 }
 
-/// machine -> Cfg -> Option Cfg
-/// machine -> Cfg -> <boolean, Cfg>
-///                    true,    Cfg
-///                    false,   state
+/// machine -> (state × tape) -> <boolean, X>
+///                                  true, (state × tape)
+///                                 false, state
 fn step() -> Term {
     // o : <boolean, X>
     //         true, (write × move × state)
     //        false, state
     let o = app!(
         Var(2),             // machine
-        app(fst(), Var(1)), // cfg.fst() = state
+        app(fst(), Var(1)), // (state × tape).fst() = state
         app(pi!(1, 3), app(snd(), Var(1)))
     );
     let b = app(fst(), o.clone());
@@ -74,12 +68,13 @@ fn step() -> Term {
         b.clone(),
         app!(
             b,
+            // Var(1) : (write × move × state)
             abs(app!(
                 pair(),
                 app(pi!(3, 3), Var(1)),
                 app(
                     app(pi!(2, 3), Var(1)), // move
-                    app!(write(), app(pi!(2, 3), Var(1)), app(snd(), Var(1)))
+                    app!(write(), app(pi!(2, 3), Var(1)), app(snd(), Var(2)))
                 )
             )),
             I(),
@@ -96,14 +91,13 @@ fn step() -> Term {
 /// If beta-reduction of result never halts, then turing machine never halts
 ///
 /// @parameter machine:
-/// state → tape_head → Option (write × move × state)
 /// state → tape_head → <boolean, X>
 ///                         true, (write × move × state)
 ///                        false, state
 pub fn run(machine: impl Fn() -> Term) -> Term {
     let x = app!(step(), Var(2), Var(1));
 
-    // machine -> Cfg -> state
+    // machine -> (state × tape) -> state
     app!(
         Y(),
         app!(
