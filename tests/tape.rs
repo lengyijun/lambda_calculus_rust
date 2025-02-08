@@ -2,7 +2,6 @@
 
 extern crate lambda_calculus;
 
-use lambda_calculus::data::boolean::fls;
 use lambda_calculus::data::boolean::tru;
 use lambda_calculus::data::list::church::nil;
 use lambda_calculus::data::pair::fst;
@@ -85,13 +84,19 @@ fn test_write() {
 }
 
 #[test]
-fn test_mmove() {
+fn test_move_left() {
     let x = app!(move_left(), new_tape());
-    /*
     assert_eq!(beta(app!(pi!(1, 3), x.clone()), HSP, 0), 0.into_church());
-    assert_eq!(beta(app!(pi!(2, 3), x.clone()), HSP, 0), tru(),);
-    assert_eq!(beta(app!(pi!(3, 3), x.clone()), HSP, 0), tru());
-     */
+    assert_ne!(beta(app!(pi!(2, 3), x.clone()), HSP, 0), nil(),);
+    assert_eq!(beta(app!(pi!(3, 3), x.clone()), HSP, 0), nil());
+}
+
+#[test]
+fn test_move_right() {
+    let x = app!(move_right(), new_tape());
+    assert_eq!(beta(app!(pi!(1, 3), x.clone()), HSP, 0), 0.into_church());
+    assert_eq!(beta(app!(pi!(2, 3), x.clone()), HSP, 0), nil(),);
+    assert_ne!(beta(app!(pi!(3, 3), x.clone()), HSP, 0), nil());
 }
 
 /*

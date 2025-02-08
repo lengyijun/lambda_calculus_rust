@@ -31,9 +31,9 @@ pub fn write() -> Term {
 /// Tape -> Tape
 /// λ <tape_head, left, right>. <head left, tail left, cons tape_head right>
 pub fn move_right() -> Term {
-    let tape_head = app(pi!(1, 3), Var(1));
-    let left = app(pi!(2, 3), Var(1));
-    let right = app(pi!(3, 3), Var(1));
+    let tape_head = app(pi!(1, 3), Var(2));
+    let left = app(pi!(2, 3), Var(2));
+    let right = app(pi!(3, 3), Var(2));
     abs(tuple!(
         app(head(), left.clone()),
         app(tail(), left),
@@ -44,9 +44,9 @@ pub fn move_right() -> Term {
 /// Tape -> Tape
 /// λ <tape_head, left, right>. <head right, cons tape_head left, tail right>
 pub fn move_left() -> Term {
-    let tape_head = app(pi!(1, 3), Var(1));
-    let left = app(pi!(2, 3), Var(1));
-    let right = app(pi!(3, 3), Var(1));
+    let tape_head = app(pi!(1, 3), Var(2));
+    let left = app(pi!(2, 3), Var(2));
+    let right = app(pi!(3, 3), Var(2));
     abs(tuple!(
         app(head(), right.clone()),
         app!(cons(), tape_head, left),
