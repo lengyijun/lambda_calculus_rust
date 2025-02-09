@@ -95,6 +95,8 @@ pub fn step() -> Term {
     )
 }
 
+/// machine -> (state × tape) -> state
+///
 /// It is suitable for `NOR` (normal), `HNO` (hybrid normal), `CBN` (call-by-name) and `HSP`
 /// (head spine) reduction `Order`s.
 ///
@@ -106,25 +108,36 @@ pub fn step() -> Term {
 /// state → tape_head → <boolean, X>
 ///                         true, (write × move × state)
 ///                        false, state
-pub fn run(machine: impl Fn() -> Term) -> Term {
-    //  <boolean, X>
-    //      true, (state × tape)
-    //     false, state
+pub fn run(machine: Term) -> Term {
+    // Var(1): (state × tape)
+    // Var(2): machine
+    //
+    //  @return <boolean, X>
+    //              true, (state × tape)
+    //             false, state
     let x = app!(step(), Var(2), Var(1));
 
-    // machine -> (state × tape) -> state
     app!(
         Y(),
         abs!(
             3,
+            // Var(1): (state × tape)
+            // Var(2): machine
+            // Var(3): f
             app!(
                 app(fst(), x.clone()),
-                app!(Var(4), Var(3), Var(1)),
+                abs(
+                    // Var(1): new (state × tape)
+                    // Var(2): old (state × tape)
+                    // Var(3): machine
+                    // Var(4): f
+                    app!(Var(4), Var(3), Var(1))
+                ),
                 I(),
                 app(snd(), x)
             )
         ),
-        machine(),
+        machine,
         app!(pair(), 0.into_church(), new_tape())
     )
 }

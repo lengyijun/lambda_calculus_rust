@@ -16,8 +16,8 @@ fn halt_immediately() -> Term {
 
 #[test]
 fn test_halt_immediately() {
-    assert_eq!(beta(run(halt_immediately), HSP, 0), 1.into_church());
-    assert_eq!(beta(run(halt_immediately), CBN, 0), 1.into_church());
-    assert_eq!(beta(run(halt_immediately), HNO, 0), 1.into_church());
-    assert_eq!(beta(run(halt_immediately), NOR, 0), 1.into_church());
+    assert_eq!(beta(run(halt_immediately()), HSP, 0), 1.into_church());
+    assert_eq!(beta(run(halt_immediately()), CBN, 0), 1.into_church());
+    assert_eq!(beta(run(halt_immediately()), HNO, 0), 1.into_church());
+    assert_eq!(beta(run(halt_immediately()), NOR, 0), 1.into_church());
 }
