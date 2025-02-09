@@ -196,10 +196,21 @@ fn test_step() {
 }
 
 #[test]
-fn test_bb2() {
+fn test_bb2_hsp() {
     assert_eq!(beta(run(bb2()), HSP, 0), 1.into_church()); // wrong answer
+}
 
-    // assert_eq!(beta(run(bb2), CBN, 0), 1.into_church()); // wrong answer
-    // assert_eq!(beta(run(bb2), HNO, 0), 1.into_church()); // stack overflow
-    // assert_eq!(beta(run(bb2), NOR, 0), 1.into_church()); // stack overflow
+#[test]
+fn test_bb2_cbn() {
+    assert_eq!(beta(run(bb2()), CBN, 0), 1.into_church()); // wrong answer
+}
+
+#[test]
+fn test_bb2_hno() {
+    assert_eq!(beta(run(bb2()), HNO, 0), 1.into_church()); // stack overflow
+}
+
+#[test]
+fn test_bb2_nor() {
+    assert_eq!(beta(run(bb2()), NOR, 0), 1.into_church()); // stack overflow
 }
