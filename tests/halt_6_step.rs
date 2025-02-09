@@ -14,6 +14,15 @@ use lambda_calculus::*;
 ///                        false, state
 ///
 /// https://bbchallenge.org/1RB1LB_1LA1RZ
+///
+/// A   [0]
+/// B    1[0]
+/// A   [1]1
+/// B   [0]1 1
+/// A   [0]1 1 1
+/// B    1[1]1 1
+/// halt
+///
 fn bb2() -> Term {
     abs!(
         2,
@@ -195,25 +204,12 @@ fn test_step() {
     );
 }
 
-/*
+/// need 7 minutes in debug mode
+/// need 3 minutes in release mode
 #[test]
-fn test_bb2_hsp() {
-    assert_eq!(beta(run(bb2()), HSP, 0), 1.into_church()); // wrong answer
+fn test_bb2() {
+    assert_eq!(beta(run(bb2()), HSP, 0), 1.into_church());
+    // assert_eq!(beta(run(bb2()), CBN, 0), 1.into_church());
+    // assert_eq!(beta(run(bb2()), HNO, 0), 1.into_church());
+    // assert_eq!(beta(run(bb2()), NOR, 0), 1.into_church());
 }
-
-#[test]
-fn test_bb2_cbn() {
-    assert_eq!(beta(run(bb2()), CBN, 0), 1.into_church()); // wrong answer
-}
-
-#[test]
-fn test_bb2_hno() {
-    assert_eq!(beta(run(bb2()), HNO, 0), 1.into_church()); // stack overflow
-}
-
-#[test]
-fn test_bb2_nor() {
-    assert_eq!(beta(run(bb2()), NOR, 0), 1.into_church()); // stack overflow
-}
-
- */
