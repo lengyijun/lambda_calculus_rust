@@ -98,6 +98,7 @@ impl Term {
                 lhs_lhs._apply(rhs, depth);
                 lhs_rhs._apply(rhs, depth)
             }
+            Fvar(_) => {}
         }
     }
 
@@ -114,6 +115,7 @@ impl Term {
                 lhs.update_free_variables(added_depth, own_depth);
                 rhs.update_free_variables(added_depth, own_depth)
             }
+            Fvar(_) => {}
         }
     }
 

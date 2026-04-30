@@ -142,6 +142,8 @@ pub enum Term {
     Abs(Box<Term>),
     /// an application
     App(Box<(Term, Term)>),
+    /// free var
+    Fvar(char),
 }
 
 /// An error that can be returned when an inapplicable function is applied to a `Term`.
@@ -486,6 +488,7 @@ impl Term {
                     stack.push((depth, f));
                     stack.push((depth, a))
                 }
+                Fvar(_) => return false,
             }
         }
         true
@@ -503,6 +506,7 @@ impl Term {
     pub fn max_depth(&self) -> u32 {
         match self {
             Var(_) => 0,
+            Fvar(_) => 0,
             Abs(t) => t.max_depth() + 1,
             App(boxed) => {
                 let d0 = boxed.0.max_depth();
@@ -562,6 +566,7 @@ impl Term {
                 let (ref f, ref a) = **p_boxed;
                 f.has_free_variables_helper(depth) || a.has_free_variables_helper(depth)
             }
+            Fvar(_) => true,
         }
     }
 
@@ -581,6 +586,7 @@ impl Term {
                 f.max_free_index_helper(depth)
                     .max(a.max_free_index_helper(depth))
             }
+            Fvar(_) => depth,
         }
     }
 
@@ -732,6 +738,7 @@ fn show_precedence_cla(
             );
             parenthesize_if(&ret, context_precedence == 3).into()
         }
+        Fvar(c) => (*c).into(),
     }
 }
 
@@ -759,6 +766,9 @@ fn show_precedence_dbr(term: &Term, context_precedence: usize) -> String {
                 show_precedence_dbr(t2, 3)
             );
             parenthesize_if(&ret, context_precedence == 3).into()
+        }
+        Fvar(c) => {
+            format!("{}", c)
         }
     }
 }
